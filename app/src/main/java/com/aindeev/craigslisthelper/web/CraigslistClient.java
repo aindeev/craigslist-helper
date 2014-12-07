@@ -1,28 +1,34 @@
 package com.aindeev.craigslisthelper.web;
 
+import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.util.Cookie;
 
 /**
  * Created by aindeev on 14-12-07.
  */
-public class CraigslistClient {
 
-    private WebClient client;
-    private static CraigslistClient ourInstance = new CraigslistClient();
+public class CraigslistClient extends WebClient {
 
-    public static CraigslistClient getInstance() {
-        return ourInstance;
+    private static String AUTH_COOKIE_DOMAIN = "accounts.craigslist.org";
+    private static String AUTH_COOKIE_NAME = "cl_session";
+
+    CookieManager cookieManager;
+
+    public CraigslistClient() {
+        super();
+        cookieManager = new CookieManager();
+        cookieManager.setCookiesEnabled(true);
+        this.setCookieManager(cookieManager);
     }
 
-    private CraigslistClient() {
-        makeNewClient();
+    public String getAuthCookie() {
+        Cookie cookie = this.cookieManager.getCookie(AUTH_COOKIE_NAME);
+        return cookie.getValue();
     }
 
-    private void makeNewClient() {
-        client = new WebClient();
-    }
-
-    public WebClient getClient() {
-        return client;
+    public void setAuthCookie(String cookieValue) {
+        Cookie cookie = new Cookie(AUTH_COOKIE_DOMAIN, AUTH_COOKIE_NAME, cookieValue);
+        cookieManager.addCookie(cookie);
     }
 }

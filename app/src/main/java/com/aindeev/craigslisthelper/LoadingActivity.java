@@ -1,12 +1,13 @@
 package com.aindeev.craigslisthelper;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+
+import com.aindeev.craigslisthelper.login.LoginActivity;
 
 public class LoadingActivity extends Activity {
 

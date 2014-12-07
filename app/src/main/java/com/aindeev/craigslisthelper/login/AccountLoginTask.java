@@ -9,7 +9,7 @@ import com.aindeev.craigslisthelper.web.CraigslistLogin;
  * Represents an asynchronous login/registration task used to authenticate
  * the user.
  */
-public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+public class AccountLoginTask extends AsyncTask<Void, Void, Boolean> {
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -23,7 +23,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
     private final String email;
     private final String password;
 
-    public UserLoginTask(LoginInterface loginInterface, String email, String password) {
+    public AccountLoginTask(LoginInterface loginInterface, String email, String password) {
         this.loginInterface = loginInterface;
         this.email = email;
         this.password = password;

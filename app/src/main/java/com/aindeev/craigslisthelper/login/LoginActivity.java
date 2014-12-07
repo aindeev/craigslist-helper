@@ -1,16 +1,14 @@
-package com.aindeev.craigslisthelper;
+package com.aindeev.craigslisthelper.login;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -26,8 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.aindeev.craigslisthelper.login.LoginInterface;
-import com.aindeev.craigslisthelper.login.UserLoginTask;
+import com.aindeev.craigslisthelper.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +34,13 @@ import java.util.List;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, LoginInterface {
+    public static String ARG_IS_ADDING_NEW_ACCOUNT;
+    public static String ARG_ACCOUNT_TYPE;
+    public static String ARG_AUTH_TYPE;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private AccountLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -134,7 +134,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(this, email, password);
+            mAuthTask = new AccountLoginTask(this, email, password);
             mAuthTask.execute((Void) null);
         }
     }
