@@ -5,7 +5,7 @@ package com.aindeev.craigslisthelper.login;
  */
 public interface LoginInterface {
 
-    void onPostExecute(final Boolean success);
+    void onPostExecute(final Boolean success, String authCookieValue);
     void onCancelled();
 
 }
