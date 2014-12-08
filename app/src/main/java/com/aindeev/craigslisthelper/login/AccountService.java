@@ -8,7 +8,7 @@ public class AccountService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         // TODO Auto-generated method stub
-        return new AccountAuthenticator(this).getIBinder();
+        return new CraigslistAuthenticator(this).getIBinder();
     }
 
 }

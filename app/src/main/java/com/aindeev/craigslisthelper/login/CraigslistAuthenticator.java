@@ -14,11 +14,13 @@ import com.aindeev.craigslisthelper.web.CraigslistClient;
 import com.aindeev.craigslisthelper.web.CraigslistLogin;
 import com.gargoylesoftware.htmlunit.WebClient;
 
-public class AccountAuthenticator extends AbstractAccountAuthenticator {
+public class CraigslistAuthenticator extends AbstractAccountAuthenticator {
 
+    public static String accountType = "com.aindeev.craigslisthelper";
+    public static String authTokenType = "cookie";
     Context context;
 
-    public AccountAuthenticator(Context context) {
+    public CraigslistAuthenticator(Context context) {
         super(context);
         this.context = context;
     }
