@@ -27,5 +27,6 @@ public class Preferences {
     public void setUsername(String username) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(USERNAME_PREF_NAME, username);
+        editor.commit();
     }
 }

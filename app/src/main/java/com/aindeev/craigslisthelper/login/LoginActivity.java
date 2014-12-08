@@ -38,9 +38,9 @@ import java.util.List;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AccountAuthenticatorActivity implements LoaderCallbacks<Cursor>, LoginInterface {
-    public static String ARG_IS_ADDING_NEW_ACCOUNT;
-    public static String ARG_ACCOUNT_TYPE;
-    public static String ARG_AUTH_TYPE;
+    public static String ARG_IS_ADDING_NEW_ACCOUNT = "new_account";
+    public static String ARG_ACCOUNT_TYPE = "account_type";
+    public static String ARG_AUTH_TYPE = "auth_type";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -61,6 +61,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements Loade
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        accountManager = AccountManager.get(this);
 
         // Set up the login form.
         emailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -143,7 +145,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements Loade
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            loginTask = new AccountLoginTask(this, email, password);
+            loginTask = new AccountLoginTask(this, this, email, password);
             loginTask.execute((Void) null);
         }
     }
@@ -251,22 +253,32 @@ public class LoginActivity extends AccountAuthenticatorActivity implements Loade
     @Override
     public void onPostExecute(Boolean success, String authCookieValue) {
         loginTask = null;
-        showProgress(false);
 
         if (success) {
-            final Account account = new Account(email, ARG_ACCOUNT_TYPE);
-            if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
+            String accountType = getIntent().getStringExtra(ARG_ACCOUNT_TYPE);
+            String authType = getIntent().getStringExtra(ARG_AUTH_TYPE);
+            boolean newAccount = getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false);
+
+            Account account = new Account(email, accountType);
+
+            if (newAccount) {
                 accountManager.addAccountExplicitly(account, password, null);
-                accountManager.setAuthToken(account, ARG_AUTH_TYPE, authCookieValue);
+                accountManager.setAuthToken(account, authType, authCookieValue);
             } else {
-                accountManager.setAuthToken(account, ARG_AUTH_TYPE, authCookieValue);
+                accountManager.setAuthToken(account, authType, authCookieValue);
                 accountManager.setPassword(account, password);
             }
 
-            Intent intent = new Intent();
-            intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, email);
-            intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, ARG_ACCOUNT_TYPE);
-            intent.putExtra(AccountManager.KEY_AUTHTOKEN, authCookieValue);
+            Bundle data = new Bundle();
+            data.putString(AccountManager.KEY_ACCOUNT_NAME, email);
+            data.putString(AccountManager.KEY_ACCOUNT_TYPE, accountType);
+            data.putString(AccountManager.KEY_AUTHTOKEN, authCookieValue);
+
+            String val = data.getString(AccountManager.KEY_AUTHTOKEN, "");
+
+            final Intent intent = new Intent();
+            intent.putExtras(data);
+
             setAccountAuthenticatorResult(intent.getExtras());
             setResult(RESULT_OK, intent);
 

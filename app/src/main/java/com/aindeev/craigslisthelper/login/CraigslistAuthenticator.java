@@ -10,13 +10,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.aindeev.craigslisthelper.App;
+import com.aindeev.craigslisthelper.R;
 import com.aindeev.craigslisthelper.web.CraigslistClient;
 import com.aindeev.craigslisthelper.web.CraigslistLogin;
-import com.gargoylesoftware.htmlunit.WebClient;
 
 public class CraigslistAuthenticator extends AbstractAccountAuthenticator {
 
-    public static String accountType = "com.aindeev.craigslisthelper";
+    public static String accountType = App.getContext().getString(R.string.app_id);
     public static String authTokenType = "cookie";
     Context context;
 
@@ -62,7 +63,7 @@ public class CraigslistAuthenticator extends AbstractAccountAuthenticator {
         if (TextUtils.isEmpty(authToken)) {
             final String password = am.getPassword(account);
             if (password != null) {
-                CraigslistClient client = new CraigslistClient();
+                CraigslistClient client = new CraigslistClient(context);
                 boolean success = CraigslistLogin.login(client, account.name, password);
                 if (success) {
                     authToken = client.getAuthCookie();

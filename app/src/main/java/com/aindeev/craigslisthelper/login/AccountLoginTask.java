@@ -1,5 +1,6 @@
 package com.aindeev.craigslisthelper.login;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.aindeev.craigslisthelper.R;
@@ -16,8 +17,10 @@ public class AccountLoginTask extends AsyncTask<Void, Void, Boolean> {
     private final String email;
     private final String password;
     private String authCookieValue;
+    private final Context context;
 
-    public AccountLoginTask(LoginInterface loginInterface, String email, String password) {
+    public AccountLoginTask(Context context, LoginInterface loginInterface, String email, String password) {
+        this.context = context;
         this.loginInterface = loginInterface;
         this.email = email;
         this.password = password;
@@ -26,7 +29,7 @@ public class AccountLoginTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        CraigslistClient client = new CraigslistClient();
+        CraigslistClient client = new CraigslistClient(context);
         boolean success = CraigslistLogin.login(client, email, password);
         if (success) {
             authCookieValue = client.getAuthCookie();
