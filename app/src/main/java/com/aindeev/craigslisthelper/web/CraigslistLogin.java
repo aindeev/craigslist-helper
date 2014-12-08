@@ -8,7 +8,7 @@ public class CraigslistLogin {
     public CraigslistLogin() {
     }
 
-    public static boolean login(CraigslistClient client, String email, String password) {
+    public static boolean login(String email, String password) {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {

@@ -29,10 +29,9 @@ public class AccountLoginTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        CraigslistClient client = new CraigslistClient(context);
-        boolean success = CraigslistLogin.login(client, email, password);
+        boolean success = CraigslistLogin.login(email, password);
         if (success) {
-            authCookieValue = client.getAuthCookie();
+            authCookieValue = CraigslistClient.instance().getAuthCookie();
             return true;
         }
 

@@ -1,4 +1,4 @@
-package com.aindeev.craigslisthelper;
+package com.aindeev.craigslisthelper.activity;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -9,13 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.transition.Explode;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.view.Window;
 
+import com.aindeev.craigslisthelper.R;
 import com.aindeev.craigslisthelper.login.CraigslistAuthenticator;
 import com.aindeev.craigslisthelper.util.Preferences;
 import com.aindeev.craigslisthelper.web.CraigslistClient;
@@ -74,12 +72,11 @@ public class LoadingActivity extends Activity {
                                 Bundle bundle = future.getResult();
                                 String authToken = bundle.getString(AccountManager.KEY_AUTHTOKEN, "");
 
-                                CraigslistClient client = new CraigslistClient(context);
                                 if (!authToken.isEmpty()) {
-                                    client.setAuthCookie(authToken);
+                                    CraigslistClient.instance().setAuthCookie(authToken);
                                 }
 
-                                startListActivity(client);
+                                startListActivity();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -107,7 +104,7 @@ public class LoadingActivity extends Activity {
                 }, null);
     }
 
-    public void startListActivity(CraigslistClient client) {
+    public void startListActivity() {
         Intent intent = new Intent(this.getBaseContext(), PostsActivity.class);
         startActivity(intent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

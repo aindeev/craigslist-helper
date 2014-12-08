@@ -63,10 +63,9 @@ public class CraigslistAuthenticator extends AbstractAccountAuthenticator {
         if (TextUtils.isEmpty(authToken)) {
             final String password = am.getPassword(account);
             if (password != null) {
-                CraigslistClient client = new CraigslistClient(context);
-                boolean success = CraigslistLogin.login(client, account.name, password);
+                boolean success = CraigslistLogin.login(account.name, password);
                 if (success) {
-                    authToken = client.getAuthCookie();
+                    authToken = CraigslistClient.instance().getAuthCookie();
                 }
             }
         }

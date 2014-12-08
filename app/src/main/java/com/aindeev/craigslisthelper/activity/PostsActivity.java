@@ -1,17 +1,24 @@
-package com.aindeev.craigslisthelper;
+package com.aindeev.craigslisthelper.activity;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.aindeev.craigslisthelper.R;
+import com.aindeev.craigslisthelper.activity.BaseActivity;
 
-public class PostsActivity extends ActionBarActivity {
+
+public class PostsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_posts);
+
+    }
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_posts;
     }
 
 
