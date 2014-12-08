@@ -33,7 +33,7 @@ public class CookieManager {
                 return cookie.getValue();
             }
         }
-        return null;
+        return "";
     }
 
     public void setCookie(String domain, String name, String value) {
@@ -44,5 +44,9 @@ public class CookieManager {
 
     public PersistentCookieStore getCookieStore() {
         return cookieStore;
+    }
+
+    public void clearCookies() {
+        cookieStore.getCookies().clear();
     }
 }

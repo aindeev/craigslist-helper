@@ -284,6 +284,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements Loade
 
             finish();
         } else {
+            showProgress(false);
             passwordView.setError(getString(R.string.error_incorrect_password));
             passwordView.requestFocus();
         }
