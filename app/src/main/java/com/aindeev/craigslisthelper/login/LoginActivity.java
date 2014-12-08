@@ -1,6 +1,7 @@
 package com.aindeev.craigslisthelper.login;
 
 import android.accounts.Account;
+import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -8,6 +9,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -35,7 +37,7 @@ import java.util.List;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, LoginInterface {
+public class LoginActivity extends AccountAuthenticatorActivity implements LoaderCallbacks<Cursor>, LoginInterface {
     public static String ARG_IS_ADDING_NEW_ACCOUNT;
     public static String ARG_ACCOUNT_TYPE;
     public static String ARG_AUTH_TYPE;
@@ -260,6 +262,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
                 accountManager.setAuthToken(account, ARG_AUTH_TYPE, authCookieValue);
                 accountManager.setPassword(account, password);
             }
+
+            Intent intent = new Intent();
+            intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, email);
+            intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, ARG_ACCOUNT_TYPE);
+            intent.putExtra(AccountManager.KEY_AUTHTOKEN, authCookieValue);
+            setAccountAuthenticatorResult(intent.getExtras());
+            setResult(RESULT_OK, intent);
+
             finish();
         } else {
             passwordView.setError(getString(R.string.error_incorrect_password));
