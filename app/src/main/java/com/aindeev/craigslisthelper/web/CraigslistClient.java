@@ -9,6 +9,7 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.SyncHttpClient;
 
+import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
 
 /**
@@ -30,6 +31,15 @@ public class CraigslistClient {
     private static CraigslistClient instance = null;
 
     private CraigslistClient() {
+        java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);
+        java.util.logging.Logger.getLogger("org.apache.http.headers").setLevel(java.util.logging.Level.FINEST);
+
+        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+        System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "debug");
+        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "debug");
+        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.headers", "debug");
+
         asyncClient = new AsyncHttpClient();
         syncClient = new SyncHttpClient();
         cookieManager = new CookieManager(App.getContext());
@@ -57,10 +67,10 @@ public class CraigslistClient {
         cookieManager.clearCookies();
     }
 
-    public RequestHandle doPost(boolean async, String url, RequestParams params, ResponseHandlerInterface handler) {
+    public RequestHandle doPost(boolean async, String url, Header[] headers, RequestParams params, ResponseHandlerInterface handler) {
         if (async)
-            return asyncClient.post(url, params, handler);
+            return asyncClient.post(App.getContext(), url, headers, params, "application/x-www-form-urlencoded", handler);
         else
-            return syncClient.post(url, params, handler);
+            return syncClient.post(App.getContext(), url, headers, params, "application/x-www-form-urlencoded", handler);
     }
 }
