@@ -13,7 +13,7 @@ import android.text.TextUtils;
 import com.aindeev.craigslisthelper.App;
 import com.aindeev.craigslisthelper.R;
 import com.aindeev.craigslisthelper.web.CraigslistClient;
-import com.aindeev.craigslisthelper.web.CraigslistLogin;
+import com.aindeev.craigslisthelper.web.LoginRequest;
 
 public class CraigslistAuthenticator extends AbstractAccountAuthenticator {
 
@@ -63,7 +63,8 @@ public class CraigslistAuthenticator extends AbstractAccountAuthenticator {
         if (TextUtils.isEmpty(authToken)) {
             final String password = am.getPassword(account);
             if (password != null) {
-                boolean success = CraigslistLogin.login(account.name, password);
+                LoginRequest loginRequest = new LoginRequest(account.name, password);
+                boolean success = loginRequest.execute().isValue();
                 if (success) {
                     authToken = CraigslistClient.instance().getAuthCookie();
                 }

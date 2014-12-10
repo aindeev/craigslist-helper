@@ -3,9 +3,8 @@ package com.aindeev.craigslisthelper.login;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.aindeev.craigslisthelper.R;
 import com.aindeev.craigslisthelper.web.CraigslistClient;
-import com.aindeev.craigslisthelper.web.CraigslistLogin;
+import com.aindeev.craigslisthelper.web.LoginRequest;
 
 /**
  * Represents an asynchronous login/registration task used to authenticate
@@ -29,7 +28,8 @@ public class AccountLoginTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        boolean success = CraigslistLogin.login(email, password);
+        LoginRequest loginRequest = new LoginRequest(email, password);
+        boolean success = loginRequest.execute().isValue();
         if (success && !CraigslistClient.instance().getAuthCookie().isEmpty())
             return true;
         else
