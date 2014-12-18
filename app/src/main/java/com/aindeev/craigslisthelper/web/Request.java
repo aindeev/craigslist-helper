@@ -14,8 +14,18 @@ import java.util.Map;
  */
 public abstract class Request<T> extends AsyncHttpResponseHandler {
 
-    private boolean isExecuting = false;
-    private RequestCallback<T> asyncCallback = null;
+    public enum RequestType {
+        GET,
+        POST
+    };
+
+    protected boolean isExecuting = false;
+    protected RequestCallback<T> asyncCallback = null;
+    private RequestType type;
+
+    public Request(RequestType type) {
+        this.type = type;
+    }
 
     public abstract String getUrl();
     public abstract Header[] getHeaders();
@@ -31,6 +41,10 @@ public abstract class Request<T> extends AsyncHttpResponseHandler {
 
     public void doPost(boolean async) {
         CraigslistClient.instance().doPost(async, getUrl(), getHeaders(), getParams(), this);
+    }
+
+    public void doGet(boolean async) {
+        CraigslistClient.instance().doGet(async, getUrl(), getHeaders(), getParams(), this);
     }
 
     public abstract void onRequestSuccess(int i, Header[] headers, byte[] bytes);
@@ -61,7 +75,11 @@ public abstract class Request<T> extends AsyncHttpResponseHandler {
             isExecuting = true;
 
         beforeRequest();
-        this.doPost(false);
+        if (type == RequestType.POST)
+            this.doPost(false);
+        else
+            this.doGet(false);
+
         return getResult();
     }
 
@@ -73,7 +91,11 @@ public abstract class Request<T> extends AsyncHttpResponseHandler {
 
         this.asyncCallback = callback;
         beforeRequest();
-        this.doPost(true);
+
+        if (type == RequestType.POST)
+            this.doPost(true);
+        else
+            this.doGet(true);
     }
 
 }

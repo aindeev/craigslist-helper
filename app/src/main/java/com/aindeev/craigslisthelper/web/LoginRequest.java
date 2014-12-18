@@ -37,6 +37,7 @@ public class LoginRequest extends Request<Boolean> {
     private boolean success;
 
     public LoginRequest(String email, String password) {
+        super(RequestType.POST);
         this.email = email;
         this.password = password;
     }

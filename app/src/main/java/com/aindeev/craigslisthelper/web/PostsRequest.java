@@ -5,6 +5,7 @@ import android.util.Log;
 import com.aindeev.craigslisthelper.posts.Post;
 import com.aindeev.craigslisthelper.util.*;
 import com.aindeev.craigslisthelper.util.Boolean;
+import com.aindeev.craigslisthelper.web.parser.PostParser;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
@@ -30,7 +31,7 @@ public class PostsRequest extends Request<List<Post>> {
     List<Post> posts;
 
     public PostsRequest() {
-        super();
+        super(RequestType.GET);
         posts = new ArrayList<Post>();
     }
 
@@ -58,7 +59,7 @@ public class PostsRequest extends Request<List<Post>> {
     public void onRequestSuccess(int i, Header[] headers, byte[] bytes) {
         // TODO parse all posts into a list
         String response = new String(bytes);
-
+        posts = PostParser.parse(response);
         Log.d("PostsRequest", response);
     }
 

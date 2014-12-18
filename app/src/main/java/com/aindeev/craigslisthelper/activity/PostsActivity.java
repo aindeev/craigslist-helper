@@ -1,19 +1,50 @@
 package com.aindeev.craigslisthelper.activity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.aindeev.craigslisthelper.R;
 import com.aindeev.craigslisthelper.activity.BaseActivity;
+import com.aindeev.craigslisthelper.activity.recycler.DividerItemDecoration;
+import com.aindeev.craigslisthelper.activity.recycler.PostsViewAdapter;
+import com.aindeev.craigslisthelper.posts.Post;
+import com.aindeev.craigslisthelper.web.PostsRequest;
+import com.aindeev.craigslisthelper.web.RequestCallback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class PostsActivity extends BaseActivity {
+public class PostsActivity extends BaseActivity implements RequestCallback<List<Post>>{
+
+    RecyclerView recyclerView;
+    PostsViewAdapter postsViewAdapter;
+    AsyncTask<Void, Void, Void> getPostsTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         super.onCreate(savedInstanceState);
 
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        setProgressBarIndeterminateVisibility(true);
+        PostsRequest postsRequest = new PostsRequest();
+        postsRequest.execute(this);
+
+        postsViewAdapter = new PostsViewAdapter(this, new ArrayList<Post>());
+        recyclerView.setAdapter(postsViewAdapter);
     }
 
     @Override
@@ -42,5 +73,17 @@ public class PostsActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestDone(List<Post> value) {
+        setProgressBarIndeterminateVisibility(false);
+
+        if (value == null) {
+            Log.e("PostsAcitvity", "Failed to fetch posts data!");
+            // TODO could not fetch information
+        } else {
+            postsViewAdapter.addItems(value);
+        }
     }
 }

@@ -60,7 +60,7 @@ public class CraigslistAuthenticator extends AbstractAccountAuthenticator {
         String authToken = am.peekAuthToken(account, authTokenType);
 
         // Lets give another try to authenticate the user
-        if (TextUtils.isEmpty(authToken)) {
+        //if (TextUtils.isEmpty(authToken)) {
             final String password = am.getPassword(account);
             if (password != null) {
                 LoginRequest loginRequest = new LoginRequest(account.name, password);
@@ -69,7 +69,7 @@ public class CraigslistAuthenticator extends AbstractAccountAuthenticator {
                     authToken = CraigslistClient.instance().getAuthCookie();
                 }
             }
-        }
+        //}
 
         // If we get an authToken - we return it
         if (!TextUtils.isEmpty(authToken)) {

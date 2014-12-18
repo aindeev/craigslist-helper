@@ -44,7 +44,7 @@ public class CraigslistClient {
             new BasicHeader(HEADER_ACCEPT_LANGUAGE_NAME, HEADER_ACCEPT_LANGUAGE_VALUE)
     };
 
-    private static String AUTH_COOKIE_DOMAIN = "accounts.craigslist.org";
+    private static String AUTH_COOKIE_DOMAIN = ".craigslist.org";
     private static String AUTH_COOKIE_NAME = "cl_session";
 
     AsyncHttpClient asyncClient;
@@ -101,5 +101,17 @@ public class CraigslistClient {
 
         Header[] allHeaders = ArrayUtils.addAll(staticHeaders, headers);
         return client.post(App.getContext(), url, allHeaders, params, HEADER_CONTENT_TYPE_VALUE, handler);
+    }
+
+    public RequestHandle doGet(boolean async, String url, Header[] headers, RequestParams params, ResponseHandlerInterface handler) {
+        AsyncHttpClient client;
+
+        if (async)
+            client = asyncClient;
+        else
+            client = syncClient;
+
+        Header[] allHeaders = ArrayUtils.addAll(staticHeaders, headers);
+        return client.get(App.getContext(), url, allHeaders, params, handler);
     }
 }
