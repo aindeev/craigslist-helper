@@ -24,10 +24,14 @@ public class PostParser {
 
     private static String TR_TAG = "tr";
     private static String TD_TAG = "td";
+    private static String FORM_TAG = "form";
+
+    private static String RENEWED_VAL = "renewed";
 
     private static String CELL_ID_CLASS = "postingID";
     private static String CELL_NAME_CLASS = "title";
     private static String CELL_DATE_CLASS = "dates";
+    private static String CELL_BUTTONS_CLASS = "buttons";
 
     private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
 
@@ -52,23 +56,52 @@ public class PostParser {
                         else if (tableCell.className().equals(CELL_NAME_CLASS))
                             post.setName(tableCell.child(0).text());
                         else if (tableCell.className().equals(CELL_DATE_CLASS)) {
-                            post.setDatePosted(dateFormat.parse(tableCell.child(0).text()));
+                            Elements renewed = tableCell.getElementsContainingText(RENEWED_VAL);
+                            if (renewed.isEmpty())
+                                post.setDatePosted(dateFormat.parse(tableCell.child(0).text()));
+                            else {
+                                String renewedText = renewed.first().text();
+                                int start = renewedText.indexOf(RENEWED_VAL) + RENEWED_VAL.length() + 1;
+                                String renewedDate = renewedText.substring(start);
+                                post.setDatePosted(dateFormat.parse(renewedDate));
+                            }
+                        } else if (tableCell.className().equals(CELL_BUTTONS_CLASS)) {
+                            Elements forms = tableCell.getElementsByTag(FORM_TAG);
+                            for (Element form : forms) {
+                                Elements crypts = form.getElementsByAttributeValue("name", "crypt");
+                                if (!crypts.isEmpty()) {
+                                    String action = form.getElementsByAttributeValue("name", "action").first().val();
+                                    switch (action) {
+                                        case "delete":
+                                            post.setCryptByAction(Post.ManageActionType.DELETE, crypts.first().val());
+                                            break;
+                                        case "edit":
+                                            post.setCryptByAction(Post.ManageActionType.EDIT, crypts.first().val());
+                                            break;
+                                        case "renew":
+                                            post.setCryptByAction(Post.ManageActionType.RENEW, crypts.first().val());
+                                            break;
+                                        case "repost":
+                                            post.setCryptByAction(Post.ManageActionType.REPOST, crypts.first().val());
+                                            break;
+                                    }
+                                }
+                            }
                         }
                     }
 
                     if (post.getDatePosted() != null &&
                             post.getId() != null &&
-                            post.getName() != null)
+                            post.getName() != null) {
+                        post.setRenewable(post.getCryptByAction(Post.ManageActionType.RENEW) != null);
+                        post.setRepostable(post.getCryptByAction(Post.ManageActionType.REPOST) != null);
                         posts.add(post);
+                    }
                 }
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-
-        Post post = new Post();
-        posts.add(post);
 
         return posts;
     }

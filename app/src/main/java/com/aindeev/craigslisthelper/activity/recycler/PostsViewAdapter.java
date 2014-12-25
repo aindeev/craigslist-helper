@@ -1,11 +1,13 @@
 package com.aindeev.craigslisthelper.activity.recycler;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.aindeev.craigslisthelper.R;
 import com.aindeev.craigslisthelper.posts.Post;
@@ -20,6 +22,7 @@ public class PostsViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
     private List<Post> postList;
     private Context context;
 
+
     public PostsViewAdapter(Context context, List<Post> postList) {
         this.postList = postList;
         this.context = context;
@@ -29,6 +32,8 @@ public class PostsViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
     public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.posts_view, null);
         PostViewHolder postViewHolder = new PostViewHolder(view);
+        postViewHolder.setAdapter(this);
+        postViewHolder.setActivity((Activity)context);
         return postViewHolder;
     }
 
@@ -50,5 +55,10 @@ public class PostsViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
             notifyItemInserted(location);
             location++;
         }
+    }
+
+    public void removeItem(int position) {
+        postList.remove(position);
+        notifyItemRemoved(position);
     }
 }

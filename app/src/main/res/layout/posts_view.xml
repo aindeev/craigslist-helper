@@ -1,26 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:flatui="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/posts_view"
-    android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/colorWhite" >
-
-    <com.cengalabs.flatui.views.FlatTextView
-        flatui:fl_theme="@array/sand"
-        android:id="@+id/title"
-        android:layout_width="fill_parent"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:ripple="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="8dp"
-        android:maxLines="3"
-        flatui:fl_textColor="fl_main"
-        flatui:fl_backgroundColor="fl_darker"
-        flatui:fl_customBackgroundColor="#00aff0" />
+        android:background="@color/colorWhite"
+        android:orientation="horizontal"
+        android:layout_margin="15dp">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="10dp">
+            <TextView
+                android:id="@+id/post_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Untitled Post"
+                android:layout_gravity="left"
+                android:textSize="20dp"
+                android:lines="1"
+                android:ellipsize="end"
+                android:textColor="@color/colorPrimaryDark"/>
 
+            <TextView
+                android:id="@+id/post_last_updated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No info"
+                android:layout_gravity="bottom"
+                android:gravity="bottom"
+                android:layout_alignParentBottom="true"
+                android:textColor="@android:color/darker_gray"/>
+        </LinearLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp">
+
+        <ImageButton
+            android:id="@+id/renew_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/ic_action_replay_dark"/>
+
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|right"
+            android:background="@android:drawable/ic_menu_delete"/>
+    </LinearLayout>
+
+    </RelativeLayout>

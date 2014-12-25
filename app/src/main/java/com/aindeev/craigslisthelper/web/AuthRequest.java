@@ -24,24 +24,30 @@ public abstract class AuthRequest<T> extends Request<T> implements AuthenticateC
         this.context = context;
     }
 
-    public boolean testAuth(String html)
+    public boolean isAuthenticated(String html)
     {
-        return false;
+        // TODO make a better check
+        return !html.contains("loginBox");
     }
 
     @Override
     public void onSuccess(int i, Header[] headers, byte[] bytes) {
-        if (testAuth(new String(bytes)))
+        if (isAuthenticated(new String(bytes)))
             super.onSuccess(i, headers, bytes);
-        else
-            Authenticate.doAuthentication(context, this);
+        else {
+            isExecuting = false;
+
+            if (context != null) {
+                Authenticate.doAuthentication(context, this, true);
+            } else
+                /* TODO send user a notification that they need to login
+                   for auto renewal to be working */
+                return;
+        }
     }
     @Override
     public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-        onRequestFailure(i, headers, bytes);
-        if (asyncCallback != null)
-            asyncCallback.onRequestDone(getResult());
-        isExecuting = false;
+        super.onFailure(i, headers, bytes, throwable);
     }
 
     @Override

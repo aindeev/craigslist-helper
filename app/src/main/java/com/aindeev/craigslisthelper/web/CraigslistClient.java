@@ -29,6 +29,8 @@ public class CraigslistClient {
     public static String HEADER_REFERER_NAME = "Referer";
     public static String HEADER_ACCEPT_ENCODING_NAME = "Accept-Encoding";
     public static String HEADER_ACCEPT_LANGUAGE_NAME = "Accept-Language";
+    public static String HEADER_HOST_NAME = "Host";
+
 
 
     public static String HEADER_USER_AGENT_VALUE = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36";

@@ -1,5 +1,6 @@
 package com.aindeev.craigslisthelper.web;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.aindeev.craigslisthelper.posts.Post;
@@ -19,7 +20,7 @@ import java.util.Map;
 /**
  * Created by aindeev on 14-12-09.
  */
-public class PostsRequest extends Request<List<Post>> {
+public class PostsRequest extends AuthRequest<List<Post>> {
 
     private static String POSTS_URL = "https://accounts.craigslist.org/login/home";
 
@@ -30,8 +31,8 @@ public class PostsRequest extends Request<List<Post>> {
 
     List<Post> posts;
 
-    public PostsRequest() {
-        super(RequestType.GET);
+    public PostsRequest(Activity activity) {
+        super(activity, RequestType.GET);
         posts = new ArrayList<Post>();
     }
 
@@ -66,7 +67,9 @@ public class PostsRequest extends Request<List<Post>> {
     @Override
     public void onRequestFailure(int i, Header[] headers, byte[] bytes) {
         posts = null;
-        Log.d("PostsRequest", new String(bytes));
+
+        if (bytes != null)
+            Log.d("PostsRequest", new String(bytes));
     }
 
     @Override

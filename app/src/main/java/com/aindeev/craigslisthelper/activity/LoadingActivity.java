@@ -43,7 +43,7 @@ public class LoadingActivity extends Activity implements AuthenticateCallback {
         AsyncTask<Void, Void, Void> authTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                Authenticate.doAuthentication(thisFinal, thisFinal);
+                Authenticate.doAuthentication(thisFinal, thisFinal, false);
                 return null;
             }
         };

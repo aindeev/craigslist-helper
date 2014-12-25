@@ -40,7 +40,7 @@ public class PostsActivity extends BaseActivity implements RequestCallback<List<
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         setProgressBarIndeterminateVisibility(true);
-        PostsRequest postsRequest = new PostsRequest();
+        PostsRequest postsRequest = new PostsRequest(this);
         postsRequest.execute(this);
 
         postsViewAdapter = new PostsViewAdapter(this, new ArrayList<Post>());
