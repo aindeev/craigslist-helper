@@ -66,27 +66,7 @@ public class PostParser {
                                 post.setDatePosted(dateFormat.parse(renewedDate));
                             }
                         } else if (tableCell.className().equals(CELL_BUTTONS_CLASS)) {
-                            Elements forms = tableCell.getElementsByTag(FORM_TAG);
-                            for (Element form : forms) {
-                                Elements crypts = form.getElementsByAttributeValue("name", "crypt");
-                                if (!crypts.isEmpty()) {
-                                    String action = form.getElementsByAttributeValue("name", "action").first().val();
-                                    switch (action) {
-                                        case "delete":
-                                            post.setCryptByAction(Post.ManageActionType.DELETE, crypts.first().val());
-                                            break;
-                                        case "edit":
-                                            post.setCryptByAction(Post.ManageActionType.EDIT, crypts.first().val());
-                                            break;
-                                        case "renew":
-                                            post.setCryptByAction(Post.ManageActionType.RENEW, crypts.first().val());
-                                            break;
-                                        case "repost":
-                                            post.setCryptByAction(Post.ManageActionType.REPOST, crypts.first().val());
-                                            break;
-                                    }
-                                }
-                            }
+                            post = CryptParser.parse(post, tableCell.html());
                         }
                     }
 

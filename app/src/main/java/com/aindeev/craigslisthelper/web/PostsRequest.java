@@ -61,15 +61,11 @@ public class PostsRequest extends AuthRequest<List<Post>> {
         // TODO parse all posts into a list
         String response = new String(bytes);
         posts = PostParser.parse(response);
-        Log.d("PostsRequest", response);
     }
 
     @Override
     public void onRequestFailure(int i, Header[] headers, byte[] bytes) {
         posts = null;
-
-        if (bytes != null)
-            Log.d("PostsRequest", new String(bytes));
     }
 
     @Override

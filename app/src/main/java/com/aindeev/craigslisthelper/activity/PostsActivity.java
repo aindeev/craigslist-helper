@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PostsActivity extends BaseActivity implements RequestCallback<List<Post>>{
+public class PostsActivity extends BaseActivity {
 
     RecyclerView recyclerView;
     PostsViewAdapter postsViewAdapter;
@@ -40,11 +40,22 @@ public class PostsActivity extends BaseActivity implements RequestCallback<List<
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         setProgressBarIndeterminateVisibility(true);
-        PostsRequest postsRequest = new PostsRequest(this);
-        postsRequest.execute(this);
-
         postsViewAdapter = new PostsViewAdapter(this, new ArrayList<Post>());
         recyclerView.setAdapter(postsViewAdapter);
+
+        PostsRequest postsRequest = new PostsRequest(this);
+        postsRequest.execute(new RequestCallback<List<Post>>() {
+            @Override
+            public void onRequestDone(List<Post> value) {
+                setProgressBarIndeterminateVisibility(false);
+
+                if (value == null) {
+                    Log.e("PostsActivity", "Failed to fetch posts data!");
+                } else {
+                    postsViewAdapter.addItems(value);
+                }
+            }
+        });
     }
 
     @Override
@@ -73,17 +84,5 @@ public class PostsActivity extends BaseActivity implements RequestCallback<List<
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onRequestDone(List<Post> value) {
-        setProgressBarIndeterminateVisibility(false);
-
-        if (value == null) {
-            Log.e("PostsAcitvity", "Failed to fetch posts data!");
-            // TODO could not fetch information
-        } else {
-            postsViewAdapter.addItems(value);
-        }
     }
 }

@@ -1,6 +1,8 @@
 package com.aindeev.craigslisthelper.activity.recycler;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -67,13 +69,31 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
                 if (post == null)
                     return;
 
-                ManageRequest request = new ManageRequest(activity, post, Post.ManageActionType.DELETE);
-                request.execute(new RequestCallback<Boolean>() {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
-                    public void onRequestDone(Boolean value) {
-                        adapter.removeItem(getPosition());
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                ManageRequest request = new ManageRequest(activity, post, Post.ManageActionType.DELETE);
+                                request.execute(new RequestCallback<Boolean>() {
+                                    @Override
+                                    public void onRequestDone(Boolean success) {
+                                        if (success) {
+                                            adapter.removeItem(getPosition());
+                                        }
+                                    }
+                                });
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                break;
+                        }
                     }
-                });
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setMessage("Remove this post?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("Cancel", dialogClickListener).show();
             }
         });
     }

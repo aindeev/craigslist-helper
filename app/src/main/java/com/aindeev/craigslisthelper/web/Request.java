@@ -56,6 +56,9 @@ public abstract class Request<T> extends AsyncHttpResponseHandler {
         if (asyncCallback != null)
             asyncCallback.onRequestDone(getResult());
         isExecuting = false;
+
+        String response = new String(bytes);
+        Log.d("Request.OnSuccess", response);
     }
     @Override
     public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
@@ -63,6 +66,11 @@ public abstract class Request<T> extends AsyncHttpResponseHandler {
         if (asyncCallback != null)
             asyncCallback.onRequestDone(getResult());
         isExecuting = false;
+
+        if (bytes != null) {
+            String response = new String(bytes);
+            Log.d("Request.OnFailure", response);
+        }
     }
 
     public abstract void beforeRequest();
@@ -74,28 +82,23 @@ public abstract class Request<T> extends AsyncHttpResponseHandler {
         else
             isExecuting = true;
 
+        boolean async = (this.asyncCallback != null);
         beforeRequest();
-        if (type == RequestType.POST)
-            this.doPost(false);
-        else
-            this.doGet(false);
 
-        return getResult();
+        if (type == RequestType.POST)
+            this.doPost(async);
+        else
+            this.doGet(async);
+
+        if (asyncCallback == null)
+            return getResult();
+        else
+            return null;
     }
 
     public void execute(RequestCallback<T> callback) throws IllegalStateException {
-        if (isExecuting)
-            throw new IllegalStateException("This request is currently executing");
-        else
-            isExecuting = true;
-
         this.asyncCallback = callback;
-        beforeRequest();
-
-        if (type == RequestType.POST)
-            this.doPost(true);
-        else
-            this.doGet(true);
+        execute();
     }
 
 }

@@ -27,12 +27,15 @@ public class ManageRequest extends AuthRequest<Boolean> {
             new BasicHeader(CraigslistClient.HEADER_REFERER_NAME, "https://accounts.craigslist.org/login/home")
     };
 
+    private Activity activity;
     private Post post;
     private Post.ManageActionType actionType;
+    private boolean haveDeleteCrypt = false;
     private boolean success = false;
 
     public ManageRequest(Activity activity, Post post, Post.ManageActionType actionType) {
         super(activity, RequestType.POST);
+        this.activity = activity;
         this.post = post;
         this.actionType = actionType;
     }
@@ -79,5 +82,33 @@ public class ManageRequest extends AuthRequest<Boolean> {
     @Override
     public Boolean getResult() {
         return success;
+    }
+
+
+    @Override
+    public Boolean execute() throws IllegalStateException {
+
+        if (actionType == Post.ManageActionType.DELETE && !haveDeleteCrypt) {
+            GetDeleteCryptRequest cryptRequest = new GetDeleteCryptRequest(activity, post);
+            if (asyncCallback == null) {
+                if (cryptRequest.execute() == null)
+                    return null;
+                else
+                    haveDeleteCrypt = true;
+            } else {
+                cryptRequest.execute(new RequestCallback<String>() {
+                    @Override
+                    public void onRequestDone(String value) {
+                        if (value != null) {
+                            haveDeleteCrypt = true;
+                            execute();
+                        }
+                    }
+                });
+                return getResult();
+            }
+        }
+
+        return super.execute();
     }
 }
