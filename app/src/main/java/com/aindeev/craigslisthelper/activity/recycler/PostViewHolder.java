@@ -10,6 +10,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.MaterialDialogCompat;
 import com.aindeev.craigslisthelper.R;
 import com.aindeev.craigslisthelper.posts.Post;
 import com.aindeev.craigslisthelper.web.ManageRequest;
@@ -71,11 +73,14 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
                 if (post == null)
                     return;
 
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(activity);
+                builder.title("Remove this post?")
+                        .positiveText("Yes")
+                        .negativeText("Cancel")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                super.onPositive(dialog);
                                 ManageRequest request = new ManageRequest(activity, post, Post.ManageActionType.DELETE);
                                 request.execute(new RequestCallback<Boolean>() {
                                     @Override
@@ -85,17 +90,13 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
                                         }
                                     }
                                 });
-                                break;
+                            }
 
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                break;
-                        }
-                    }
-                };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setMessage("Remove this post?").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("Cancel", dialogClickListener).show();
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                super.onNegative(dialog);
+                            }
+                        }).show();
             }
         });
     }

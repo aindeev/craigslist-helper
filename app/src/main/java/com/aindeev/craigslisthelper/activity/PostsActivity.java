@@ -34,6 +34,8 @@ public class PostsActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
 
+        getSupportActionBar().setTitle("Craigslist Posts");
+
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         recyclerView.addItemDecoration(
@@ -42,7 +44,7 @@ public class PostsActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        setProgressBarIndeterminateVisibility(true);
+        setSupportProgressBarIndeterminateVisibility(true);
         postsViewAdapter = new PostsViewAdapter(this, new ArrayList<Post>());
         recyclerView.setAdapter(postsViewAdapter);
 
@@ -58,6 +60,8 @@ public class PostsActivity extends BaseActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        recyclerView.requestFocus();
+
         fetchPostsAsync();
     }
 
@@ -66,36 +70,12 @@ public class PostsActivity extends BaseActivity {
         return R.layout.activity_posts;
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_posts, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
     private void fetchPostsAsync() {
         PostsRequest postsRequest = new PostsRequest(this);
         postsRequest.execute(new RequestCallback<List<Post>>() {
             @Override
             public void onRequestDone(List<Post> value) {
-                setProgressBarIndeterminateVisibility(false);
+                setSupportProgressBarIndeterminateVisibility(false);
                 swipeContainer.setRefreshing(false);
 
                 if (value == null) {
