@@ -2,6 +2,7 @@ package com.aindeev.craigslisthelper.activity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,10 +24,9 @@ import java.util.List;
 
 public class PostsActivity extends BaseActivity {
 
-    RecyclerView recyclerView;
-    PostsViewAdapter postsViewAdapter;
-    AsyncTask<Void, Void, Void> getPostsTask;
-
+    private SwipeRefreshLayout swipeContainer;
+    private RecyclerView recyclerView;
+    private PostsViewAdapter postsViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,19 +43,19 @@ public class PostsActivity extends BaseActivity {
         postsViewAdapter = new PostsViewAdapter(this, new ArrayList<Post>());
         recyclerView.setAdapter(postsViewAdapter);
 
-        PostsRequest postsRequest = new PostsRequest(this);
-        postsRequest.execute(new RequestCallback<List<Post>>() {
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRequestDone(List<Post> value) {
-                setProgressBarIndeterminateVisibility(false);
-
-                if (value == null) {
-                    Log.e("PostsActivity", "Failed to fetch posts data!");
-                } else {
-                    postsViewAdapter.addItems(value);
-                }
+            public void onRefresh() {
+                fetchPostsAsync();
             }
         });
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        fetchPostsAsync();
     }
 
     @Override
@@ -84,5 +84,23 @@ public class PostsActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void fetchPostsAsync() {
+        PostsRequest postsRequest = new PostsRequest(this);
+        postsRequest.execute(new RequestCallback<List<Post>>() {
+            @Override
+            public void onRequestDone(List<Post> value) {
+                setProgressBarIndeterminateVisibility(false);
+                swipeContainer.setRefreshing(false);
+
+                if (value == null) {
+                    Log.e("PostsActivity", "Failed to fetch posts data!");
+                } else {
+                    postsViewAdapter.addItems(value);
+                }
+            }
+        });
     }
 }

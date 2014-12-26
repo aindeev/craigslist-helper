@@ -53,6 +53,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
                             if(activity != null) {
                                 Toast.makeText(activity, "Post has been renewed", Toast.LENGTH_SHORT);
                                 post.setDatePosted(Calendar.getInstance().getTime());
+                                post.setRenewable(false);
+                                post.setRepostable(false);
                                 setPost(post);
                                 adapter.notifyItemChanged(getPosition());
                             }
@@ -111,9 +113,10 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         title.setText(post.getName());
         lastUpdated.setText(getTimeElapsed(post.getDatePosted()));
 
-        if (!post.isRenewable() && !post.isRepostable()) {
-            renewButton.setActivated(false);
-        }
+        if (post.isRenewable() || post.isRepostable())
+            setRenewableState(true);
+        else
+            setRenewableState(false);
     }
 
     public String getTimeElapsed(Date pastTime) {
@@ -147,5 +150,10 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
             return diffSeconds + "seconds ago";
         else
             return "now";
+    }
+
+
+    public void setRenewableState(boolean enabled) {
+        renewButton.setEnabled(enabled);
     }
 }

@@ -51,10 +51,26 @@ public class PostsViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
     public void addItems(List<Post> posts) {
         int location = this.postList.size();
         for (Post post : posts) {
-            postList.add(location, post);
-            notifyItemInserted(location);
-            location++;
+            Post duplicate = findPostbyId(post.getId());
+            if (duplicate != null) {
+                int index = postList.indexOf(duplicate);
+                postList.remove(index);
+                postList.add(index, post);
+                notifyItemChanged(index);
+            } else {
+                postList.add(location, post);
+                notifyItemInserted(location);
+                location++;
+            }
         }
+    }
+
+    public Post findPostbyId(String id) {
+        for (Post post : postList) {
+            if (post.getId().equals(id))
+                return post;
+        }
+        return null;
     }
 
     public void removeItem(int position) {
