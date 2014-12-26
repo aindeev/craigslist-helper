@@ -91,6 +91,7 @@ public class CraigslistClient {
     
     public void clearCookies() {
         cookieManager.clearCookies();
+        cookieManager.cookieStore.clear();
     }
 
     public RequestHandle doPost(boolean async, String url, Header[] headers, RequestParams params, ResponseHandlerInterface handler) {

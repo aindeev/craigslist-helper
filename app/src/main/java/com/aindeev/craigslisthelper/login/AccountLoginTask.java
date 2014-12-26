@@ -30,10 +30,12 @@ public class AccountLoginTask extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         LoginRequest loginRequest = new LoginRequest(email, password);
         boolean success = loginRequest.execute().isValue();
-        if (success && !CraigslistClient.instance().getAuthCookie().isEmpty())
+        if (success && !CraigslistClient.instance().getAuthCookie().isEmpty()) {
+            authCookieValue = CraigslistClient.instance().getAuthCookie();
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     @Override

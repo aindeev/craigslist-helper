@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:ripple="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="15dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dp"
+    android:background="@color/colorWhite">
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp">
+        <TextView
+            android:id="@+id/post_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="10dp">
-            <TextView
-                android:id="@+id/post_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Untitled Post"
-                android:layout_gravity="left"
-                android:textSize="20dp"
-                android:lines="1"
-                android:ellipsize="end"
-                android:textColor="@color/colorPrimaryDark"/>
+            android:text="Untitled Post"
+            android:layout_gravity="left"
+            android:textSize="20dp"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textColor="@android:color/black"/>
 
-            <TextView
-                android:id="@+id/post_last_updated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No info"
-                android:layout_gravity="bottom"
-                android:gravity="bottom"
-                android:layout_alignParentBottom="true"
-                android:textColor="@android:color/darker_gray"/>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/post_last_updated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No info"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:textColor="@android:color/darker_gray"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -59,4 +59,4 @@
             android:background="@android:drawable/ic_menu_delete"/>
     </LinearLayout>
 
-    </RelativeLayout>
+</RelativeLayout>

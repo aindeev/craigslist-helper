@@ -70,8 +70,6 @@ public class PostsRequest extends AuthRequest<List<Post>> {
 
     @Override
     public void beforeRequest() {
-        CraigslistClient client = CraigslistClient.instance();
-        client.clearCookies();
     }
 
     @Override

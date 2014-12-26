@@ -69,13 +69,11 @@ public class LoginRequest extends Request<Boolean> {
     @Override
     public void onRequestSuccess(int i, Header[] headers, byte[] bytes) {
         success = true;
-        Log.d("CraigslistLogin", new String(bytes));
     }
 
     @Override
     public void onRequestFailure(int i, Header[] headers, byte[] bytes) {
         success = false;
-        Log.d("CraigslistLogin", new String(bytes));
     }
 
     @Override

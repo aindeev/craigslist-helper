@@ -36,7 +36,10 @@ public class PostsActivity extends BaseActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+        recyclerView.addItemDecoration(
+                new DividerItemDecoration(getBaseContext().getResources().getDrawable(R.drawable.divider_line),
+                        false, true));
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         setProgressBarIndeterminateVisibility(true);
