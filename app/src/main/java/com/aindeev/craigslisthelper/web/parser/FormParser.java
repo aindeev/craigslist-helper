@@ -23,13 +23,15 @@ public class FormParser {
         for (Element form : forms) {
 
             for (Element button : form.getElementsByTag("button")) {
-                if (button.val().equals(buttonValue)) {
+                if (button.val().equalsIgnoreCase(buttonValue)) {
                     foundForm = true;
                     break;
                 }
             }
 
             if (foundForm) {
+                formData.setFormUrl(form.attr("action"));
+
                 Elements inputs = form.getElementsByTag("input");
                 for (Element input : inputs) {
                     String name = input.nodeName();

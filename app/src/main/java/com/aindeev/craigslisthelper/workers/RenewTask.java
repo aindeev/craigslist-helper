@@ -17,6 +17,7 @@ import com.aindeev.craigslisthelper.web.RepostRequest;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -38,14 +39,20 @@ public class RenewTask extends AsyncTask<String, Void, Void> {
 
         this.activity = activity;
 
-        for(Post post : posts) {
+        for(Iterator<Post> it = this.posts.iterator(); it.hasNext();) {
+            Post post = it.next();
             long daysPassed = getDateDiff(post.getDatePosted(), Calendar.getInstance().getTime(), TimeUnit.DAYS);
-            if (!post.isRenewable() && daysPassed < 30) {
-                posts.remove(post);
+//            if (!post.isRenewable() && daysPassed < 30) {
+//                it.remove();
+//            }
+
+            // TODO REMOVE THIS
+            if (!post.isRenewable()) {
+                it.remove();
             }
         }
 
-        if (posts.size() > 0) {
+        if (this.posts.size() > 0) {
             View view = activity.getLayoutInflater().inflate(R.layout.renew_all_dialog, null);
             dialog = new MaterialDialog.Builder(activity)
                     .title(R.string.renew_all_message)
@@ -92,14 +99,6 @@ public class RenewTask extends AsyncTask<String, Void, Void> {
                 } else {
                     RepostRequest repostRequest = new RepostRequest(activity, post);
                     repostRequest.execute();
-
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            textView.setText(numRenewed + " out of " + posts.size() + " posts renewed...");
-                        }
-                    });
-
 //                    try {
 //                        Thread.sleep(1000 * 60); // sleep for 1 minutes
 //                    } catch (InterruptedException e) {

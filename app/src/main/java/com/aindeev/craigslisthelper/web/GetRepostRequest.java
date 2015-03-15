@@ -30,7 +30,7 @@ public class GetRepostRequest extends AuthRequest<FormData> {
 
     private static Map<String,String> staticParams = new HashMap<String, String>(){{
         put(ACTION_NAME, "repost");
-        put(GO_NAME, "Repost this Posting");
+        put(GO_NAME, "repost");
     }};
 
 
@@ -44,7 +44,7 @@ public class GetRepostRequest extends AuthRequest<FormData> {
 
     @Override
     public String getUrl() {
-        return MANAGE_URL + post.getId();
+        return MANAGE_URL + post.getId() + "/";
     }
 
     @Override
