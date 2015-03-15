@@ -9,7 +9,10 @@ public class Post {
 
     private String id;
     private String name;
+    private PostStatus status;
+
     private Date datePosted;
+    private Date dateUpdated;
 
     private String cryptDelete;
     private String cryptEdit;
@@ -17,7 +20,6 @@ public class Post {
     private String cryptRepost;
 
     private boolean renewable;
-    private boolean repostable;
 
     public enum ManageActionType {
         DELETE {
@@ -43,6 +45,12 @@ public class Post {
                 return "repost";
             }
         }
+    }
+
+    public enum PostStatus {
+        ACTIVE,
+        DELETED,
+        OTHER
     }
 
     public Post() {
@@ -71,6 +79,14 @@ public class Post {
 
     public void setDatePosted(Date datePosted) {
         this.datePosted = datePosted;
+    }
+
+    public Date getDateUpdated() {
+        return dateUpdated;
+    }
+
+    public void setDateUpdated(Date dateUpdated) {
+        this.dateUpdated = dateUpdated;
     }
 
     public String getCryptByAction(ManageActionType type) {
@@ -105,6 +121,14 @@ public class Post {
         }
     }
 
+    public PostStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PostStatus status) {
+        this.status = status;
+    }
+
     public boolean isRenewable() {
         return renewable;
     }
@@ -113,11 +137,4 @@ public class Post {
         this.renewable = renewable;
     }
 
-    public boolean isRepostable() {
-        return repostable;
-    }
-
-    public void setRepostable(boolean repostable) {
-        this.repostable = repostable;
-    }
 }

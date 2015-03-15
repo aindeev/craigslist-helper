@@ -2,22 +2,22 @@ package com.aindeev.craigslisthelper.web;
 
 import android.app.Activity;
 
+import com.aindeev.craigslisthelper.posts.FormData;
 import com.aindeev.craigslisthelper.posts.Post;
-import com.aindeev.craigslisthelper.web.parser.CryptParser;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by aindeev on 14-12-23.
  */
-public class GetDeleteCryptRequest extends AuthRequest<String> {
+public class FormRequest extends AuthRequest<String> {
 
     private static String MANAGE_URL = "https://post.craigslist.org/manage/";
+    private static String CRYPT_NAME = "crypt";
     private static String ACTION_NAME = "action";
     private static String GO_NAME = "go";
 
@@ -27,23 +27,17 @@ public class GetDeleteCryptRequest extends AuthRequest<String> {
             new BasicHeader(CraigslistClient.HEADER_REFERER_NAME, "https://accounts.craigslist.org/login/home")
     };
 
-    private static Map<String,String> staticParams = new HashMap<String, String>(){{
-        put(ACTION_NAME, "delete");
-        put(GO_NAME,"delete");
-    }};
+    private FormData formData = null;
+    private String response = null;
 
-
-    private Post post;
-    private String deleteCrypt = null;
-
-    public GetDeleteCryptRequest(Activity activity, Post post) {
-        super(activity, RequestType.GET);
-        this.post = post;
+    public FormRequest(Activity activity, FormData formData) {
+        super(activity, RequestType.POST);
+        this.formData = formData;
     }
 
     @Override
     public String getUrl() {
-        return MANAGE_URL + post.getId();
+        return formData.getFormUrl();
     }
 
     @Override
@@ -53,19 +47,21 @@ public class GetDeleteCryptRequest extends AuthRequest<String> {
 
     @Override
     public Map<String, String> getStaticParams() {
-        return staticParams;
+        return null;
     }
 
     @Override
     public RequestParams getParams() {
         RequestParams params = new RequestParams();
-        addStaticParams(params);
+        for (Map.Entry <String, String> entry : formData.getData().entrySet()) {
+            params.add(entry.getKey(), entry.getValue());
+        }
         return params;
     }
 
     @Override
     public void onRequestSuccess(int i, Header[] headers, byte[] bytes) {
-        CryptParser.parse(post, new String(bytes));
+        response = new String(bytes);
     }
 
     @Override
@@ -80,7 +76,7 @@ public class GetDeleteCryptRequest extends AuthRequest<String> {
 
     @Override
     public String getResult() {
-        return post.getCryptByAction(Post.ManageActionType.DELETE);
+        return response;
     }
 
 }

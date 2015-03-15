@@ -1,25 +1,27 @@
 package com.aindeev.craigslisthelper.activity;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.aindeev.craigslisthelper.R;
-import com.aindeev.craigslisthelper.activity.BaseActivity;
 import com.aindeev.craigslisthelper.activity.recycler.DividerItemDecoration;
 import com.aindeev.craigslisthelper.activity.recycler.PostsViewAdapter;
 import com.aindeev.craigslisthelper.posts.Post;
 import com.aindeev.craigslisthelper.web.PostsRequest;
 import com.aindeev.craigslisthelper.web.RequestCallback;
+import com.aindeev.craigslisthelper.workers.RenewTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
 
 public class PostsActivity extends BaseActivity {
@@ -31,10 +33,9 @@ public class PostsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
         super.onCreate(savedInstanceState);
-
-        getSupportActionBar().setTitle("Craigslist Posts");
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -70,7 +71,10 @@ public class PostsActivity extends BaseActivity {
         return R.layout.activity_posts;
     }
 
-    private void fetchPostsAsync() {
+    public void fetchPostsAsync() {
+        if (!swipeContainer.isRefreshing())
+            swipeContainer.setRefreshing(true);
+
         PostsRequest postsRequest = new PostsRequest(this);
         postsRequest.execute(new RequestCallback<List<Post>>() {
             @Override
@@ -86,4 +90,33 @@ public class PostsActivity extends BaseActivity {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_renew_all) {
+            PostsViewAdapter adapter = (PostsViewAdapter)recyclerView.getAdapter();
+            RenewTask worker = new RenewTask(this, adapter.getPostList());
+            worker.execute((String[]) null);
+
+//            View view = this.getLayoutInflater().inflate(R.layout.renew_all_dialog, null);
+//            MaterialDialog dialog = new MaterialDialog.Builder(this)
+//                    .customView(view)
+//                    .title(R.string.renew_all_message)
+//                    .build();
+//
+//            //dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+//            dialog.show();
+//
+//            TextView textView = (TextView)dialog.findViewById(R.id.renew_all_def_count);
+//            if (textView != null)
+//                textView.setText("0 out of 5 posts renewed...");
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }

@@ -22,7 +22,6 @@ public class PostsViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
     private List<Post> postList;
     private Context context;
 
-
     public PostsViewAdapter(Context context, List<Post> postList) {
         this.postList = postList;
         this.context = context;
@@ -51,6 +50,10 @@ public class PostsViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
     public void addItems(List<Post> posts) {
         int location = this.postList.size();
         for (Post post : posts) {
+
+            if (post.getStatus() != Post.PostStatus.ACTIVE)
+                continue;
+
             Post duplicate = findPostbyId(post.getId());
             if (duplicate != null) {
                 int index = postList.indexOf(duplicate);
@@ -76,5 +79,9 @@ public class PostsViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
     public void removeItem(int position) {
         postList.remove(position);
         notifyItemRemoved(position);
+    }
+
+    public List<Post> getPostList() {
+        return postList;
     }
 }

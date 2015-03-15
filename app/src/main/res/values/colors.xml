@@ -7,4 +7,7 @@
     <color name="colorLightGrey">#ffe9e9e9</color>
     <color name="colorText">#ffffffff</color>
     <color name="colorBackground">#ffd7d9ff</color>
+
+    <color name="colorDialogDivider">@color/colorPrimary</color>
+    <color name="colorDialogText">#ff1d384e</color>
 </resources>

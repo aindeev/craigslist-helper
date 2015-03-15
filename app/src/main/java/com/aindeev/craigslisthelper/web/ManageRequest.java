@@ -8,7 +8,6 @@ import com.loopj.android.http.RequestParams;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,6 +30,7 @@ public class ManageRequest extends AuthRequest<Boolean> {
     private Post post;
     private Post.ManageActionType actionType;
     private boolean haveDeleteCrypt = false;
+    private boolean haveRepostCrypt = false;
     private boolean success = false;
 
     public ManageRequest(Activity activity, Post post, Post.ManageActionType actionType) {
@@ -89,7 +89,7 @@ public class ManageRequest extends AuthRequest<Boolean> {
     public Boolean execute() throws IllegalStateException {
 
         if (actionType == Post.ManageActionType.DELETE && !haveDeleteCrypt) {
-            GetDeleteCryptRequest cryptRequest = new GetDeleteCryptRequest(activity, post);
+            GetCryptRequest cryptRequest = new GetCryptRequest(activity, post, Post.ManageActionType.DELETE);
             if (asyncCallback == null) {
                 if (cryptRequest.execute() == null)
                     return null;

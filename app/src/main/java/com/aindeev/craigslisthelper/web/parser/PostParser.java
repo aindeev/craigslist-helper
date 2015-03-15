@@ -19,16 +19,17 @@ import java.util.Locale;
  */
 public class PostParser {
 
-    private static String POST_TABLE_KEY = "summary";
-    private static String POST_TABLE_VALUE = "postings";
+    private static String POST_TABLE_CLASS = "accthp_postings";
 
     private static String TR_TAG = "tr";
     private static String TD_TAG = "td";
     private static String FORM_TAG = "form";
+    private static String SMALL_TAG = "small";
 
     private static String RENEWED_VAL = "renewed";
 
     private static String CELL_ID_CLASS = "postingID";
+    private static String CELL_STATUS_CLASS = "status";
     private static String CELL_NAME_CLASS = "title";
     private static String CELL_DATE_CLASS = "dates";
     private static String CELL_BUTTONS_CLASS = "buttons";
@@ -41,7 +42,7 @@ public class PostParser {
         try {
             Document document = Jsoup.parse(html);
 
-            Elements postTables = document.getElementsByAttributeValue(POST_TABLE_KEY, POST_TABLE_VALUE);
+            Elements postTables = document.getElementsByClass(POST_TABLE_CLASS);
             for (Element table : postTables) {
                 Elements tableEntries = table.getElementsByTag(TR_TAG);
                 for (Element tableEntry : tableEntries) {
@@ -51,30 +52,45 @@ public class PostParser {
 
                     Post post = new Post();
                     for (Element tableCell : tableCells) {
-                        if (tableCell.className().equals(CELL_ID_CLASS))
-                            post.setId(tableCell.child(0).text());
-                        else if (tableCell.className().equals(CELL_NAME_CLASS))
-                            post.setName(tableCell.child(0).text());
-                        else if (tableCell.className().equals(CELL_DATE_CLASS)) {
-                            Elements renewed = tableCell.getElementsContainingText(RENEWED_VAL);
-                            if (renewed.isEmpty())
-                                post.setDatePosted(dateFormat.parse(tableCell.child(0).text()));
-                            else {
-                                String renewedText = renewed.first().text();
-                                int start = renewedText.indexOf(RENEWED_VAL) + RENEWED_VAL.length() + 1;
+                        if (tableCell.hasClass(CELL_ID_CLASS))
+                            post.setId(tableCell.text().trim());
+                        else if (tableCell.hasClass(CELL_STATUS_CLASS)) {
+                            String status = tableCell.getElementsByTag("small").first().text();
+                            if (status.equals("Deleted") || status.equals("Expired"))
+                                post.setStatus(Post.PostStatus.DELETED);
+                            else if (status.equals("Active"))
+                                post.setStatus(Post.PostStatus.ACTIVE);
+                            else
+                                post.setStatus(Post.PostStatus.OTHER);
+                        } else if (tableCell.hasClass(CELL_NAME_CLASS)) {
+                            Elements links = tableCell.getElementsByTag("a");
+                            if (links.size() > 0)
+                                post.setName(links.first().text());
+                            else
+                                post.setName(tableCell.text());
+                        } else if (tableCell.hasClass(CELL_DATE_CLASS)) {
+                            if (!tableCell.text().contains(RENEWED_VAL)) {
+                                post.setDatePosted(dateFormat.parse(tableCell.text()));
+                                post.setDateUpdated(post.getDatePosted());
+                            } else {
+                                String renewedText = tableCell.text();
+                                int renewedStart = renewedText.indexOf(RENEWED_VAL);
+                                int start = renewedStart + RENEWED_VAL.length() + 1;
+                                String postedDate = renewedText.substring(0, renewedStart - 2);
                                 String renewedDate = renewedText.substring(start);
-                                post.setDatePosted(dateFormat.parse(renewedDate));
+
+                                post.setDatePosted(dateFormat.parse(postedDate));
+                                post.setDateUpdated(dateFormat.parse(renewedDate));
                             }
-                        } else if (tableCell.className().equals(CELL_BUTTONS_CLASS)) {
+                        } else if (tableCell.hasClass(CELL_BUTTONS_CLASS)) {
                             post = CryptParser.parse(post, tableCell.html());
                         }
                     }
 
-                    if (post.getDatePosted() != null &&
+                    if (post.getDateUpdated() != null &&
                             post.getId() != null &&
                             post.getName() != null) {
                         post.setRenewable(post.getCryptByAction(Post.ManageActionType.RENEW) != null);
-                        post.setRepostable(post.getCryptByAction(Post.ManageActionType.REPOST) != null);
                         posts.add(post);
                     }
                 }
